@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="cordova.js"></script>
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css">
+    <link rel="stylesheet" href="css/custom.css">
+    
+</head>
+<body>
+<script src="js/jquery-2.2.2.min.js"></script>
+<script src="js/jquery.mobile-1.4.5.min.js"></script>
+<script src="js/jqm_defaults.js"></script>
+<script src="js/main.js"></script>
+
+<div data-role="page" id="home" data-theme="b"> <div data-role="header">
+    <h1>Ebay Price Checker</h1>
+
+<form class="ui-filterable">
+    <input id="filterable-input" data-type="search" placeholder="Search Products...">
+</form>
+<div id="ProductList">
+<ul data-role="listview" data-filter="true" data-inset="true" data-input="#filterable-input" id="my-listview">
+    <li>
+        <img src="assets/thumbnails/1.jpg">
+        <h2>Broken Bells</h2>
+        <p>Broken Bells</p></a>
+    </li>
+    <li>
+        <img src="assets/thumbnails/2.png">
+        <h2>Warning</h2>
+        <p>Hot Chip</p></a>
+    </li>
+    <li>
+        <img src="assets/thumbnails/3.png">
+        <h2>Wolfgang Amadeus Phoenix</h2>
+        <p>Phoenix</p></a>
+    </li>
+</ul>
+</div>
+<span class="submit" onclick="scanBCode()">Scan</span>
+</body>
+</html>
