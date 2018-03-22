@@ -70,7 +70,7 @@
 -->
 
     <!-- Third party plugins -->
-    <plugin name="phonegap-plugin-barcodescanner" />
+    <plugin name="phonegap-plugin-barcodescanner" spec="~6.0.0"/>
 
 	<!--//these are generic not good enough for a live build - you will nedd to be os and device specific (android can use 9 slice png)-->
 	<icon src="icon.png" />
