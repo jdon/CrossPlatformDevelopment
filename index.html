@@ -13,32 +13,53 @@
 <script src="js/jquery.mobile-1.4.5.min.js"></script>
 <script src="js/jqm_defaults.js"></script>
 <script src="js/main.js"></script>
+<script src="js/item.js"></script>
 
-<div data-role="page" id="home" data-theme="b"> <div data-role="header">
-    <h1>Ebay Price Checker</h1>
-
+<div data-role="page" id="home" data-theme="a"> 
+<div data-role="header">
+    <h1>Price Checker</h1>
+</div>
 <form class="ui-filterable">
     <input id="filterable-input" data-type="search" placeholder="Search Products...">
 </form>
 <div id="ProductList">
 <ul data-role="listview" data-filter="true" data-inset="true" data-input="#filterable-input" id="my-listview">
     <li>
-        <img src="assets/thumbnails/1.jpg">
-        <h2>Broken Bells</h2>
-        <p>Broken Bells</p></a>
+    <a href="#item" onclick="setID(1)">
+        <img src="assets/thumbnails/1.jpg"/>
+        <h2>Pepsi Max</h2>
+        <p>Pepsi Max</p>
+        </a>
     </li>
     <li>
-        <img src="assets/thumbnails/2.png">
-        <h2>Warning</h2>
-        <p>Hot Chip</p></a>
+    <a href="#item" onclick="setID(2)">
+        <img src="assets/thumbnails/2.png"/>
+        <h2>Pepsi Max</h2>
+        <p>Pepsi Max</p>
+        </a>
     </li>
     <li>
-        <img src="assets/thumbnails/3.png">
-        <h2>Wolfgang Amadeus Phoenix</h2>
-        <p>Phoenix</p></a>
+    <a href="#item" onclick="setID(3)">
+        <img src="assets/thumbnails/3.png"/>
+        <h2>Pepsi Max</h2>
+        <p>Pepsi Max</p>
+        </a>
     </li>
 </ul>
 </div>
-<span class="submit" onclick="scanBCode()">Scan</span>
+<div data-role="footer" data-position="fixed" onclick="scanBCode()" data-theme="b"> 
+	<h4 >Scan Barcode</h4> 
+</div> 
+</div>
+<div data-role="page" id="item" data-theme="a">
+<div class="ui-grid-a">
+	<div class="ui-block-a"><button type="button" data-theme="c">Previous</button></div>
+	<div class="ui-block-b"><button type="button" data-theme="c">Next</button></div>	   
+</div>
+<div class="ui-grid-solo">
+	<div class="ui-block-a"><button type="v" data-theme="b">More</button></div>
+</div>
+
+</div>
 </body>
 </html>
