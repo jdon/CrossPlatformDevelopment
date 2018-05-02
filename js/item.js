@@ -1,4 +1,4 @@
-var currentItem = 0;
+var currentItem;
 function setID(ID)
 {
     currentItem = ID;

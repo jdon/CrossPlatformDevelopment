@@ -10,7 +10,6 @@ lookupURL = "http://svcs.ebay.com/services/search/FindingService/v1?" +
             "sortOrder=PricePlusShippingLowest&" +
             "outputSelector=PictureURLSuperSize&" +
 "keywords=";
-var db = null;
 
 var storage;
 
@@ -20,7 +19,7 @@ function alertDismissed() {
 
 function setup() {
     // load local storage and throw stuff on screen
-    setupDB();
+    console.log(cordova.file);
     storage = window.localStorage;
     value = JSON.parse(storage.getItem("Items")); // Pass a key name to get its value.
     //storage.removeItem("Items");
@@ -38,11 +37,17 @@ function setup() {
 function showItem(ID,type){
     //alert(ID);
     items = JSON.parse(storage.getItem("Items"));
+    console.log(items.length);
     //alert(items);
-    item = items[ID];
+    var item = items[ID];
+    console.log("ID:"+ID);
+    console.log("Title:"+item.title);
     //alert(item);
-    title = item.title[0];
-    pictureURL = item.pictureURLSuperSize[0];
+    var title = item.title;
+    var pictureURL = item.PictureURL;
+    var Category = item.ItemDescription;
+    var AveragePrice = item.AveragePrice;
+    console.log("type:"+type);
     if(type == 0)
     {
         //alert("adding Item");
@@ -51,18 +56,18 @@ function showItem(ID,type){
         '<li class="ui-li-has-thumb">'+
         '<a class="ui-btn ui-btn-icon-right ui-icon-carat-r" href="#item" onclick="setID('+ID+')">'+
         '<img src="'+pictureURL+'">'+
-        '<h2>'+title+'</h2>'+
-        '<p>Broken Bells</p>'+
+        '<p>'+title+'</p>'+
+        '<h4>£'+AveragePrice+'</h4>'+
         '</a>'+
         '</li>'
         );
     }else
     {
         //Item page
-        $("#ItemPic").replaceWith('<img src="'+pictureURL+'"/>');
-        $("#ItemName").replaceWith( "<p>"+title+"</p>" );
-        $("#ItemDescription").replaceWith( "<p>"+"Drink"+"</p>" );
-        $("#ItemPrice").replaceWith( "<p>"+"£69"+"</p>" );
+        $("#ItemPic").html('<img src="'+pictureURL+'"/>');
+        $("#ItemName").html( "<p>"+title+"</p>" );
+        $("#ItemDescription").html( "<p>"+Category+"</p>" );
+        $("#ItemPrice").html( "<p>£"+AveragePrice+"</p>" );
     }
 }
 
@@ -88,7 +93,7 @@ function addItem(tesd)
         ID = ite.length;
         ite.push(tesd);
         item = JSON.stringify(ite);
-        storage.setItem("Items", item);;
+        storage.setItem("Items", item);
         //alert("Added 2 item" + item);
     }
     showItem(ID,0);
@@ -134,12 +139,47 @@ function LookupProduct(EAN)
                     if(data[0].searchResult[0].item != null){
                         items = data[0].searchResult[0].item;
                         tesd = items[0];
-                        addItem(tesd);
+                        var lowestPrice = 999999999;
+                        var totalPrice = 0;
+                        var product = new Object();
                         for(i = 0; i < items.length;i++)
                         {
-                            //break so it only adds one item.
-                            break;
+                            console.log("Adding items")
+                            item = items[i];
+                            console.log(item)
+                            title = item.title[0];
+                            imageURL = item.galleryURL[0];
+                            sellingStatus = item.sellingStatus[0];
+                            ConvertedPrice = sellingStatus.convertedCurrentPrice[0];
+                            price = ConvertedPrice.__value__;
+                            category = item.primaryCategory[0];
+                            ItemDescription = category.categoryName[0];
+                            totalPrice = totalPrice + parseInt(price);
+                            console.log("Adding items 2")
+                            if(price < lowestPrice)
+                            {
+                                lowestPrice = price;
+                            }
+                            if(i == 0)
+                            {
+                                product.title = title;
+                                product.PictureURL = item.pictureURLSuperSize[0];
+                                product.AveragePrice = 0;
+                                product.LowestPrice = 0;
+                                product.Category = category;
+                                product.ItemDescription = ItemDescription;
+                            }
+                            console.log("Adding items 3")
                         }
+                        console.log("finished loop")
+                        product.LowestPrice = lowestPrice;
+                        console.log(totalPrice);
+                        averagePrice = (totalPrice/items.length).toFixed(2);;
+                        console.log(averagePrice);
+                        product.AveragePrice = averagePrice;
+                        console.log("calling add Item")
+                        addItem(product);
+
                         //scroll to bottom of page
                         $("html, body").animate({ scrollTop: $(document).height() }, "slow");
                     }else
