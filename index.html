@@ -15,6 +15,8 @@
 <script src="js/main.js"></script>
 <script src="js/item.js"></script>
 <script src="js/DBManager.js.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiGBUuT3mCtWcVo9L78M4GgqmwUYiZ5-8&callback=initMap" async defer></script>
+
 
 <div data-role="page" id="home" data-theme="a" data-fullscreen="false"> 
     <div data-role="header" data-position="fixed" data-theme="a">
@@ -66,6 +68,23 @@ $(document).on("pageinit",function(){
         <div id="EbayButton" class="ui-block-b"><a href="#" onclick="window.open('http://www.kidzout.com', '_system');" class="ui-btn ui-btn-b ui-shadow ui-corner-all">View on Ebay</a></div>
 
     </div>
+    <div class="ui-grid-solo">
+    <div id="map"></div>
+    </div>
+    <script>
+        function initMap() {
+            var uluru = {lat: -25.363, lng: 131.044};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 17,
+                center: uluru
+            });
+            var marker = new google.maps.Marker({
+                position: uluru,
+                map: map
+            });
+        }
+    </script>
+
 </div>   
 </div>
 

@@ -28,10 +28,16 @@ function setup() {
         for(i = 0; i < value.length;i++)
         {
             showItem(i,0);
-            //break so it only adds one item.
         }
     }
-    //alert("Device Ready");
+    if (window.navigator.offLine) {
+        console.log("Offline");
+    }
+    else {
+        console.log('online');
+
+        //alert("Device Ready");
+    }
 }
 
 function showItem(ID,type){
@@ -108,8 +114,9 @@ function scanBCode()
 {
     cordova.plugins.barcodeScanner.scan(
         function (result) {
-          if(result != null)
+          if(result.text.length >0)
           {
+            console.log(result.text.length);
             LookupProduct(result.text);
           }
         },
