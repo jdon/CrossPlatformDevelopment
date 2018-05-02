@@ -25,16 +25,12 @@
         permission on your app, which PhoneGap requires.
         <preference name="permissions"                value="none"/>
     -->
-    <!-- root-level config-file block -->
-    <custom-config-file parent="/*" target="AndroidManifest.xml">
-        <uses-permission android:maxSdkVersion="15" android:name="android.permission.READ_CONTACTS" />
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-        <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-        <uses-permission android:name="android.permission.CAMERA" />
-        <uses-feature android:name="android.hardware.camera" />
-        <uses-feature android:name="android.hardware.camera.autofocus" />
-    </custom-config-file>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
 	<preference name="keepRunning" 				  value="false" />
 	<preference name="AllowInlineMediaPlayback" 	  value="true"/>
