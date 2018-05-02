@@ -10,6 +10,7 @@ lookupURL = "http://svcs.ebay.com/services/search/FindingService/v1?" +
             "sortOrder=PricePlusShippingLowest&" +
             "outputSelector=PictureURLSuperSize&" +
 "keywords=";
+var db = null;
 
 var storage;
 
@@ -19,62 +20,54 @@ function alertDismissed() {
 
 function setup() {
     // load local storage and throw stuff on screen
+    setupDB();
     storage = window.localStorage;
-    var value = storage.getItem("Items"); // Pass a key name to get its value.
+    value = JSON.parse(storage.getItem("Items")); // Pass a key name to get its value.
     //storage.removeItem("Items");
     if (value != null)
     {
         for(i = 0; i < value.length;i++)
         {
-            item = value[i];
-            title = item.title[0];
-            pictureURL = item.pictureURLSuperSize[0];
-            $('#ProductList ul').append(
-            '<li class="ui-li-static ui-body-inherit ui-li-has-thumb">'+
-            '<img src="'+pictureURL+'">'+
-            '<h2>'+title+'</h2>'+
-            '<p>Broken Bells</p>'+
-            '</li>'
-            );
+            showItem(i,0);
             //break so it only adds one item.
-            break;
         }
     }
     //alert("Device Ready");
-};
+}
 
-function showItem(ID,item,type)
-{;
+function showItem(ID,type){
+    //alert(ID);
+    items = JSON.parse(storage.getItem("Items"));
+    //alert(items);
+    item = items[ID];
+    //alert(item);
     title = item.title[0];
     pictureURL = item.pictureURLSuperSize[0];
     if(type == 0)
     {
-        alert("adding Item");
+        //alert("adding Item");
         //home page
         $('#ProductList ul').append(
-        '<a href="#item" onclick="setID(1)">'+
-        '<li class="ui-li-static ui-body-inherit ui-li-has-thumb">'+
+        '<li class="ui-li-has-thumb">'+
+        '<a class="ui-btn ui-btn-icon-right ui-icon-carat-r" href="#item" onclick="setID('+ID+')">'+
         '<img src="'+pictureURL+'">'+
         '<h2>'+title+'</h2>'+
         '<p>Broken Bells</p>'+
+        '</a>'+
         '</li>'
         );
     }else
     {
         //Item page
-        $('#ProductList ul').append(
-        '<li class="ui-li-static ui-body-inherit ui-li-has-thumb">'+
-        '<img src="'+pictureURL+'">'+
-        '<h2>'+title+'</h2>'+
-        '<p>Broken Bells</p>'+
-        '</li>'
-        );
+        $("#ItemPic").replaceWith('<img src="'+pictureURL+'"/>');
+        $("#ItemName").replaceWith( "<p>"+title+"</p>" );
+        $("#ItemDescription").replaceWith( "<p>"+"Drink"+"</p>" );
+        $("#ItemPrice").replaceWith( "<p>"+"£69"+"</p>" );
     }
 }
 
 function addItem(tesd)
 {
-    storage = window.localStorage;
     var value = storage.getItem("Items"); // Pass a key name to get its value.
     //alert("Adding Item");
     ID = 0;
@@ -84,7 +77,7 @@ function addItem(tesd)
         // no values so make layout
         var array = [];
         array.push(tesd);
-        ite = JSON.stringify(array)
+        ite = JSON.stringify(array);
         storage.setItem("Items", ite);
         
         //alert("Added 1 item" + ite);
@@ -92,14 +85,14 @@ function addItem(tesd)
     {
         //alert("Second");
         ite = JSON.parse(value);
-        ID = ite.length
+        ID = ite.length;
         ite.push(tesd);
-        item = JSON.stringify(ite)
-        storage.setItem("Items", item);
+        item = JSON.stringify(ite);
+        storage.setItem("Items", item);;
         //alert("Added 2 item" + item);
     }
-    showItem(tesd,0);
-}
+    showItem(ID,0);
+};
 
 function scanBCode()
 {
@@ -127,10 +120,10 @@ function scanBCode()
           disableSuccessBeep: false // iOS and Android
         }
     );
-}
+};
 function LookupProduct(EAN)
 {
-    url = lookupURL + EAN
+    url = lookupURL + EAN;
     $.getJSON(url).success(function(result)
     {
         $.each(result, function(i, field){
@@ -151,16 +144,19 @@ function LookupProduct(EAN)
                         $("html, body").animate({ scrollTop: $(document).height() }, "slow");
                     }else
                     {
-                        alert("Could not find product")
+                        alert("Could not find product");
                     }
+                }else
+                {
+                    alert("Search unsucessful");
                 }
             }else
             {
-                alert("Unable to connect")
+                alert("Unable to connect");
             }
         });
     }).error(function(jqXhr, textStatus, error)
     {
-        //alert('error')
+        alert(textStatus);
     })
 }

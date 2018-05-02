@@ -36,3 +36,10 @@ span.submit {
     -moz-transform:rotate(-90deg);
     -o-transform:rotate(-90deg);
 }
+.ui-grid-b img {
+    width  : 100%;
+    height : auto;
+}
+.ui-grid-a p {
+    margin-top: 30px;
+}
