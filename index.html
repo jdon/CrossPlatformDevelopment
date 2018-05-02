@@ -46,9 +46,9 @@ $(document).on("pageinit",function(){
 });
 </script>
 <div class="ui-grid-a">
-    <div  data-role="header" data-position="fixed" data-theme="a"  >
+    <div  id='header' data-role="header" data-position="fixed" data-theme="a"  >
         <a href="#home" data-icon="arrow-l">Back</a>
-        <h1 > Item Name</h1>
+        <h1 >Item Details</h1>
     </div>
     <div class="ui-grid-b" style="padding-top: 50px">
         <div class="ui-block-a" style="width:40%"><div id="ItemPic" class="ui-bar ui-bar-c">
@@ -57,9 +57,15 @@ $(document).on("pageinit",function(){
         <div class="ui-block-b" style="width:60%"><div class="ui-bar ui-bar-c" >
             <div id="ItemName"><h1>Pepsi Max</h1></div>
             <div id="ItemDescription"><p><h2> Drinks</h2></p></div>
-            <div id="ItemPrice"><p><h2> Price: £69</h2></p></div>
+            <div id="AveragePrice"><p><h2> Average: £69</h2></p></div>
+            <div id="LowestPrice"><p><h2> Lowest: £69</h2></p></div>
         </div></div>
-    </div> 
+    </div>
+    <div class="ui-grid-a">
+        <div class="ui-block-a"></div>
+        <div id="EbayButton" class="ui-block-b"><a href="#" onclick="window.open('http://www.kidzout.com', '_system');" class="ui-btn ui-btn-b ui-shadow ui-corner-all">View on Ebay</a></div>
+
+    </div>
 </div>   
 </div>
 
