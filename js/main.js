@@ -30,7 +30,8 @@ function setup() {
     if(enableLoc == null)
     {
         //location has not been enabled so asked do they want it
-        navigator.notification.confirm("Would you like to use location data?", getLocation());
+        //navigator.notification.confirm("Would you like to use location data?", getLocation());
+        getLocation
     }
     if(enableLoc)
     {
