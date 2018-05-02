@@ -12,6 +12,7 @@ lookupURL = "http://svcs.ebay.com/services/search/FindingService/v1?" +
 "keywords=";
 
 var storage;
+var imageClicked = false;
 
 function alertDismissed() {
     // do something
@@ -31,7 +32,7 @@ function setup() {
     {
         //location has not been enabled so asked do they want it
         //navigator.notification.confirm("Would you like to use location data?", getLocation());
-        getLocation
+        getLocation();
     }
     if(enableLoc)
     {
@@ -55,6 +56,33 @@ function setup() {
 
         //alert("Device Ready");
     }
+    $("#ProductList ul").on("taphold", function (event) {
+        console.log("TapHold");
+        var eventID = $(event.target).prop("id");
+        $("#"+eventID+" img").attr("src","assets/thumbnails/bin.png");
+        console.log(event.target);
+        console.log("Long Press"+eventID);
+    });
+    $('img').on("click",function (event) {
+        var id = $(event.target).prop("id");
+        var src = $(event.target).prop("src");
+        var Filename= src.split('/').pop()
+        if(Filename == "bin.png")
+        {
+            //delete the item
+            //console.log("Delete the item");
+            $('#'+id+'').remove();
+            removeItem(id);
+        }
+    })
+}
+
+function removeItem(id)
+{
+    item = JSON.parse(storage.getItem("Items"));
+    item.splice(id, 1);
+    item = JSON.stringify(item);
+    storage.setItem("Items", item);
 }
 
 function getLocation()
@@ -103,7 +131,12 @@ function geocodeLatLng() {
     });
 }
 
-
+function test(ID)
+{
+    console.log("img test "+ID);
+    imageClicked = true;
+    return false;
+}
 function showItem(ID,type){
     //alert(ID);
     items = JSON.parse(storage.getItem("Items"));
@@ -128,11 +161,11 @@ function showItem(ID,type){
         //alert("adding Item");
         //home page
         $('#ProductList ul').append(
-        '<li class="ui-li-has-thumb">'+
-        '<a class="ui-btn ui-btn-icon-right ui-icon-carat-r" href="#item" onclick="setID('+ID+')">'+
-        '<img src="'+pictureURL+'">'+
-        '<p>'+title+'</p>'+
-        '<h4>£'+AveragePrice+'</h4>'+
+        '<li class="ui-li-has-thumb" id="'+ID+'">'+
+        '<a id="'+ID+'"class="ui-btn ui-btn-icon-right ui-icon-carat-r"  onclick="setID('+ID+',this)">'+
+        '<img id="'+ID+'" src="'+pictureURL+'" onclick="test('+ID+')"/>'+
+        '<p id="'+ID+'" >'+title+'</p>'+
+        '<h4 id="'+ID+'" >£'+AveragePrice+'</h4>'+
         '</a>'+
         '</li>'
         );
@@ -167,19 +200,33 @@ function addItem(tesd)
         array.push(tesd);
         ite = JSON.stringify(array);
         storage.setItem("Items", ite);
-        
+        showItem(ID,0);
+        $("html, body").animate({ scrollTop: $(document).height() }, "slow");
         //alert("Added 1 item" + ite);
     }else
     {
         //alert("Second");
         ite = JSON.parse(value);
+        for(i = 0; i < ite.length;i++)
+        {
+            product = ite[i];
+            console.log(product.EAN +" EAN" +tesd.EAN);
+            if(product.EAN == tesd.EAN)
+            {
+                console.log(product.EAN +" EAN" +tesd.EAN);
+                alert("Item already exists!");
+                return;
+            }
+        }
         ID = ite.length;
         ite.push(tesd);
         item = JSON.stringify(ite);
         storage.setItem("Items", item);
+        showItem(ID,0);
+        $("html, body").animate({ scrollTop: $(document).height() }, "slow");
         //alert("Added 2 item" + item);
     }
-    showItem(ID,0);
+
 };
 
 function scanBCode()
@@ -258,6 +305,7 @@ function LookupProduct(EAN)
                                 }
                                 if(i == 0)
                                 {
+                                    product.EAN = EAN;
                                     product.title = title;
                                     product.SearchURL = SearchURL;
                                     product.PictureURL = PictureURL;
@@ -286,7 +334,7 @@ function LookupProduct(EAN)
                             addItem(product);
 
                             //scroll to bottom of page
-                            $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+
                         }else
                             {
                                 alert("Could not find product");
