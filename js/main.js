@@ -17,11 +17,27 @@ function alertDismissed() {
     // do something
 }
 
+var currentLocation = null;
+var latlng = {lat: parseFloat(0), lng: parseFloat(0)};
+
 function setup() {
     // load local storage and throw stuff on screen
     console.log(cordova.file);
     storage = window.localStorage;
     value = JSON.parse(storage.getItem("Items")); // Pass a key name to get its value.
+    enableLoc = storage.getItem("EnabledLocation"); // Pass a key name to get its value.
+    console.log("Location: "+enableLoc);
+    if(enableLoc == null)
+    {
+        //location has not been enabled so asked do they want it
+        navigator.notification.confirm("Would you like to use location data?", getLocation());
+    }
+    if(enableLoc)
+    {
+        //it's enabled so get location
+        console.log("Getting location");
+        getLocation();
+    }
     //storage.removeItem("Items");
     if (value != null)
     {
@@ -40,14 +56,61 @@ function setup() {
     }
 }
 
+function getLocation()
+{
+    storage.setItem("EnabledLocation",true);
+    console.log("Running location");
+    var onSuccess = function(position) {
+        console.log("Success");
+        console.log('Latitude: '          + position.coords.latitude          + '\n' +
+            'Longitude: '         + position.coords.longitude         + '\n' +
+            'Altitude: '          + position.coords.altitude          + '\n' +
+            'Accuracy: '          + position.coords.accuracy          + '\n' +
+            'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+            'Heading: '           + position.coords.heading           + '\n' +
+            'Speed: '             + position.coords.speed             + '\n' +
+            'Timestamp: '         + position.timestamp                + '\n');
+        latlng.lat = position.coords.latitude;
+        latlng.lng = position.coords.longitude;
+        geocodeLatLng();
+    };
+
+    // onError Callback receives a PositionError object
+    //
+    var onError = function(error) {
+        alert('code: '    + error.code    + '\n' +
+            'message: ' + error.message + '\n');
+    }
+
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+}
+
+
+function geocodeLatLng() {
+    var geocoder = new google.maps.Geocoder;
+    geocoder.geocode({'location': latlng}, function(results, status) {
+        if (status === 'OK') {
+            if (results[0]) {
+                console.log(results[0].formatted_address)
+                currentLocation = results[0].formatted_address;
+            } else {
+                window.alert('No results found');
+            }
+        } else {
+            alert('Geocoder failed due to: ' + status);
+        }
+    });
+}
+
+
 function showItem(ID,type){
     //alert(ID);
     items = JSON.parse(storage.getItem("Items"));
-    console.log(items.length);
+    //console.log(items.length);
     //alert(items);
     var item = items[ID];
-    console.log("ID:"+ID);
-    console.log("Title:"+item.title);
+    //console.log("ID:"+ID);
+    //console.log("Title:"+item.title);
     //alert(item);
     var title = item.title;
     var pictureURL = item.PictureURL;
@@ -55,8 +118,10 @@ function showItem(ID,type){
     var AveragePrice = item.AveragePrice;
     var LowestPrice = item.LowestPrice;
     var SearchURL = item.SearchURL;
-    console.log("search URL"+SearchURL);
-    console.log("type:"+type);
+    var Itemlatlng = item.latlng;
+    var ItemcurrentLocation = item.currentLocation;
+    //console.log("search URL"+SearchURL);
+    //console.log("type:"+type);
     if(type == 0)
     {
         //alert("adding Item");
@@ -75,10 +140,16 @@ function showItem(ID,type){
         //Item page
         $("#ItemPic").html('<img src="'+pictureURL+'"/>');
         $("#ItemName").html( "<h5>"+title+"</h5>" );
-        $("#ItemDescription").html( "<p>Category:      "+Category+"</p>" );
-        $("#AveragePrice").html(    "<p>Average Price:£"+AveragePrice+"</p>" );
-        $("#LowestPrice").html(     "<p>Lowest Price: £"+LowestPrice+"</p>" );
+        $("#ItemDescription").html( "<p><b>Category:      </b>"+Category+"</p>" );
+        $("#AveragePrice").html(    "<p><b>Average Price</b>:£"+AveragePrice+"</p>" );
+        $("#LowestPrice").html(     "<p><b>Lowest Price</b>: £"+LowestPrice+"</p>" );
         $("#EbayButton").html("<a href=\"#\" onclick=\"window.open('"+SearchURL+"', '_system');\" class=\"ui-btn ui-btn-b ui-shadow ui-corner-all\">View on Ebay</a>");
+        if(Itemlatlng.lat != 0)
+        {
+            $("#Address").html("<p><b> Scan Location: </b>"+ItemcurrentLocation+"</p>" );
+            var locString = 'geo:'+Itemlatlng.lat+','+Itemlatlng.lng+'?q='+ItemcurrentLocation;
+            $("#MapButton").html("<a href=\"#\" onclick=\"window.open('"+locString+"', '_system');\" class=\"ui-btn ui-btn-b ui-shadow ui-corner-all\">Open Map</a>");
+        }
     }
 }
 
@@ -203,6 +274,14 @@ function LookupProduct(EAN)
                             console.log(averagePrice);
                             product.AveragePrice = averagePrice;
                             console.log("calling add Item")
+                            if(latlng.lat != 0)
+                            {
+                                product.latlng = latlng;
+                            }
+                            if(currentLocation != null)
+                            {
+                                product.currentLocation = currentLocation;
+                            }
                             addItem(product);
 
                             //scroll to bottom of page
