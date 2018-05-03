@@ -60,7 +60,7 @@ function setup() {
         }
     })
     StatusBar.overlaysWebView(false);
-    StatusBar.backgroundColorByHexString("#ffffff");
+    StatusBar.backgroundColorByHexString("#E9E9E9");
 }
 
 function removeItem(id)
