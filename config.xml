@@ -7,7 +7,7 @@
     version     = "1.0.0" >
     
     <!-- versionCode is optional and Android only -->
-    <name>Price Checker</name>
+    <name>PriceX</name>
     <description>
         Uses eBay to check prices
     </description> 
