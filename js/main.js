@@ -16,6 +16,7 @@ var imageClicked = false;
 
 var currentLocation = null;
 var latlng = {lat: parseFloat(0), lng: parseFloat(0)};
+var postcode = null;
 
 function setup() {
     // load local storage and throw stuff on screen
@@ -97,6 +98,14 @@ function geocodeLatLng() {
         if (status === 'OK') {
             if (results[0]) {
                 currentLocation = results[0].formatted_address;
+                for(var i=0; i < results[0].address_components.length; i++)
+                {
+                    var component = results[0].address_components[i];
+                    if(component.types[0] == "postal_code")
+                    {
+                        postcode = component.long_name.replace(/ /g,'')
+                    }
+                }
             } else {
                 alert.alert('Could not find address');
             }
@@ -237,8 +246,13 @@ function scanBCode()
 };
 function LookupProduct(EAN)
 {
-    url = lookupURL + EAN;
-    $.getJSON(url).success(function(result)
+    lookupURL = lookupURL + EAN;
+    if (postcode != null) {
+        // we have a valid post code so we can do the request with the location
+        lookupURL = lookupURL + "&buyerPostalCode" + postcode;
+
+    }
+    $.getJSON(lookupURL).success(function(result)
     {
         $.each(result, function(i, field){
             data = field;
