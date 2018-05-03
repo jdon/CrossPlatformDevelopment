@@ -246,13 +246,13 @@ function scanBCode()
 };
 function LookupProduct(EAN)
 {
-    lookupURL = lookupURL + EAN;
+    var url = lookupURL + EAN;
     if (postcode != null) {
         // we have a valid post code so we can do the request with the location
-        lookupURL = lookupURL + "&buyerPostalCode" + postcode;
+        url = url + "&buyerPostalCode" + postcode;
 
     }
-    $.getJSON(lookupURL).success(function(result)
+    $.getJSON(url).success(function(result)
     {
         $.each(result, function(i, field){
             data = field;

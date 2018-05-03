@@ -1,7 +1,6 @@
 var currentItem;
 function setID(ID,el)
 {
-    console.log("testiad");
     if(imageClicked)
     {
         imageClicked = false;
