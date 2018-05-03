@@ -14,20 +14,14 @@ lookupURL = "http://svcs.ebay.com/services/search/FindingService/v1?" +
 var storage;
 var imageClicked = false;
 
-function alertDismissed() {
-    // do something
-}
-
 var currentLocation = null;
 var latlng = {lat: parseFloat(0), lng: parseFloat(0)};
 
 function setup() {
     // load local storage and throw stuff on screen
-    console.log(cordova.file);
     storage = window.localStorage;
     value = JSON.parse(storage.getItem("Items")); // Pass a key name to get its value.
     enableLoc = storage.getItem("EnabledLocation"); // Pass a key name to get its value.
-    console.log("Location: "+enableLoc);
     if(enableLoc == null)
     {
         //location has not been enabled so asked do they want it
@@ -37,7 +31,6 @@ function setup() {
     if(enableLoc)
     {
         //it's enabled so get location
-        console.log("Getting location");
         getLocation();
     }
     //storage.removeItem("Items");
@@ -49,19 +42,11 @@ function setup() {
         }
     }
     if (window.navigator.offLine) {
-        console.log("Offline");
-    }
-    else {
-        console.log('online');
-
-        //alert("Device Ready");
+        alert("Please enable internet access to get the best functionality")
     }
     $("#ProductList ul").on("taphold", function (event) {
-        console.log("TapHold");
         var eventID = $(event.target).prop("id");
         $("#"+eventID+" img").attr("src","assets/thumbnails/bin.png");
-        console.log(event.target);
-        console.log("Long Press"+eventID);
     });
     $('img').on("click",function (event) {
         var id = $(event.target).prop("id");
@@ -70,7 +55,6 @@ function setup() {
         if(Filename == "bin.png")
         {
             //delete the item
-            //console.log("Delete the item");
             $('#'+id+'').remove();
             removeItem(id);
         }
@@ -88,17 +72,7 @@ function removeItem(id)
 function getLocation()
 {
     storage.setItem("EnabledLocation",true);
-    console.log("Running location");
     var onSuccess = function(position) {
-        console.log("Success");
-        console.log('Latitude: '          + position.coords.latitude          + '\n' +
-            'Longitude: '         + position.coords.longitude         + '\n' +
-            'Altitude: '          + position.coords.altitude          + '\n' +
-            'Accuracy: '          + position.coords.accuracy          + '\n' +
-            'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-            'Heading: '           + position.coords.heading           + '\n' +
-            'Speed: '             + position.coords.speed             + '\n' +
-            'Timestamp: '         + position.timestamp                + '\n');
         latlng.lat = position.coords.latitude;
         latlng.lng = position.coords.longitude;
         geocodeLatLng();
@@ -120,32 +94,24 @@ function geocodeLatLng() {
     geocoder.geocode({'location': latlng}, function(results, status) {
         if (status === 'OK') {
             if (results[0]) {
-                console.log(results[0].formatted_address)
                 currentLocation = results[0].formatted_address;
             } else {
-                window.alert('No results found');
+                alert.alert('Could not find address');
             }
         } else {
-            alert('Geocoder failed due to: ' + status);
+            alert('Could not find address');
         }
     });
 }
 
 function test(ID)
 {
-    console.log("img test "+ID);
     imageClicked = true;
     return false;
 }
 function showItem(ID,type){
-    //alert(ID);
     items = JSON.parse(storage.getItem("Items"));
-    //console.log(items.length);
-    //alert(items);
     var item = items[ID];
-    //console.log("ID:"+ID);
-    //console.log("Title:"+item.title);
-    //alert(item);
     var title = item.title;
     var pictureURL = item.PictureURL;
     var Category = item.ItemDescription;
@@ -154,8 +120,6 @@ function showItem(ID,type){
     var SearchURL = item.SearchURL;
     var Itemlatlng = item.latlng;
     var ItemcurrentLocation = item.currentLocation;
-    //console.log("search URL"+SearchURL);
-    //console.log("type:"+type);
     if(type == 0)
     {
         //alert("adding Item");
@@ -194,7 +158,6 @@ function addItem(tesd)
     ID = 0;
     if(value == null || value == undefined)
     {
-        alert("First");
         // no values so make layout
         var array = [];
         array.push(tesd);
@@ -210,10 +173,8 @@ function addItem(tesd)
         for(i = 0; i < ite.length;i++)
         {
             product = ite[i];
-            console.log(product.EAN +" EAN" +tesd.EAN);
             if(product.EAN == tesd.EAN)
             {
-                console.log(product.EAN +" EAN" +tesd.EAN);
                 alert("Item already exists!");
                 return;
             }
@@ -235,7 +196,6 @@ function scanBCode()
         function (result) {
           if(result.text.length >0)
           {
-            console.log(result.text.length);
             LookupProduct(result.text);
           }
         },
@@ -278,9 +238,7 @@ function LookupProduct(EAN)
                             var product = new Object();
                             for(i = 0; i < items.length;i++)
                             {
-                                //console.log("Adding items")
                                 item = items[i];
-                                //console.log(item)
                                 title = item.title[0];
                                 //try to get a high quality image, if not use a normal image
                                 if(item.pictureURLSuperSize == null)
@@ -297,10 +255,8 @@ function LookupProduct(EAN)
                                 var category = item.primaryCategory[0];
                                 var ItemDescription = category.categoryName[0];
                                 totalPrice = totalPrice + parseInt(price);
-                                //console.log("Adding items 2")
                                 if(price*10 < lowestPrice)
                                 {
-                                    console.log("Lowest Price: "+price);
                                     lowestPrice = price;
                                 }
                                 if(i == 0)
@@ -314,15 +270,10 @@ function LookupProduct(EAN)
                                     product.Category = category;
                                     product.ItemDescription = ItemDescription;
                                 }
-                                //console.log("Adding items 3")
                             }
-                            console.log("finished loop")
                             product.LowestPrice = lowestPrice;
-                            console.log(totalPrice);
                             averagePrice = (totalPrice/items.length).toFixed(2);;
-                            console.log(averagePrice);
                             product.AveragePrice = averagePrice;
-                            console.log("calling add Item")
                             if(latlng.lat != 0)
                             {
                                 product.latlng = latlng;
