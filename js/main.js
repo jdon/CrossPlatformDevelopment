@@ -109,6 +109,22 @@ function test(ID)
     imageClicked = true;
     return false;
 }
+
+function initMap(loc) {
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 17,
+        center: loc
+    });
+
+    var marker = new google.maps.Marker({
+        position: loc,
+        map: map,
+        title: 'Scan Location'
+    });
+}
+
+
 function showItem(ID,type){
     items = JSON.parse(storage.getItem("Items"));
     var item = items[ID];
@@ -146,7 +162,7 @@ function showItem(ID,type){
         {
             $("#Address").html("<p><b> Scan Location: </b>"+ItemcurrentLocation+"</p>" );
             var locString = 'geo:'+Itemlatlng.lat+','+Itemlatlng.lng+'?q='+ItemcurrentLocation;
-            $("#MapButton").html("<a href=\"#\" onclick=\"window.open('"+locString+"', '_system');\" class=\"ui-btn ui-btn-b ui-shadow ui-corner-all\">Open Map</a>");
+            initMap(Itemlatlng);
         }
     }
 }

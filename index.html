@@ -51,7 +51,7 @@ $(document).on("pageinit",function(){
         <a href="#home" data-icon="arrow-l">Back</a>
         <h1 >Item Details</h1>
     </div>
-    <div class="ui-grid-b" style="padding-top: 50px">
+    <div class="ui-grid-b">
         <div class="ui-block-a" style="width:40%"><div id="ItemPic" class="ui-bar ui-bar-c">
             <img src="assets/thumbnails/2.png"/> 
         </div></div>
@@ -67,14 +67,10 @@ $(document).on("pageinit",function(){
             <div id="Address"><p><b> Scan Location: </b> </p></div>
         </div>
     </div>
-    <div class="ui-grid-a">
-        <div class="ui-block-a"></div>
-        <div id="EbayButton" class="ui-block-b"><a href="#" class="ui-btn ui-btn-b ui-shadow ui-corner-all">View on Ebay</a></div>
-    </div>
-    <div class="ui-grid-a">
-        <div class="ui-block-a"></div>
-        <div id="MapButton" class="ui-block-b"><a  onclick="window.open('geo:38.897096,-77.036545' , '_system');" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Open Location Map</a></div>
-    </div>
+
+    <div id="EbayButton"><a href="#" class="ui-btn ui-btn-b ui-shadow ui-corner-all">View On Ebay</a></div>
+
+    <div id="map"></div>
 
 
 </div>   
