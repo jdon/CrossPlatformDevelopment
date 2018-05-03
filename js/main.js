@@ -59,6 +59,8 @@ function setup() {
             removeItem(id);
         }
     })
+    StatusBar.overlaysWebView(false);
+    StatusBar.backgroundColorByHexString("#ffffff");
 }
 
 function removeItem(id)
